@@ -1,0 +1,50 @@
+[project]
+name = "PyCan" # pip install name 
+version = "1.0.0"  
+authors = [
+    {"name" = "xxx", "email" = "example@123.com"}
+]
+description = "extensions of python-can" 
+license = {"file" = "LICENSE"} 
+readme = {"file" = "README.md", "content-type" = "text/markdown"} 
+requires-python = ">=3.12" 
+classifiers = [ 
+    "Programming Language :: Python :: 3", 
+    "Operating System :: OS Independent"
+] 
+dependencies = [
+    "packaging==26.0",
+    "pywin32>=312",
+    "typing-extensions>=4.16.0",
+    "uptime>=3.0.1",
+    "wrapt==1.17.3",
+] 
+
+[project.urls] 
+homepage = "http://example.homepage.com" 
+documentation = "http://example.doc.com" 
+repository = "http://example.repository.com" 
+issues = "http://example.issues.com" 
+changelog = "http://example.changelog.com" 
+
+[tool.pygo] 
+name = "PyCan" 
+uuid = "9fce0a38-d1bf-3e21-a8b4-f90608e4feae" 
+license_type = "Privacy" 
+category = "MODULE" 
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"] 
+build-backend = "uv_build" 
+
+[dependency-groups]
+dev = [
+    "pycan",
+]
+
+[tool.uv.build-backend]
+module-name = "can"
+
+[tool.uv.sources]
+pycan = { workspace = true }
+
