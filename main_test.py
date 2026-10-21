@@ -13,6 +13,7 @@ import logging
  
 # from tests.test_app import TestApp 
 from tests.test_pcan import Test_PcanBus
+import can
  
 def main(): 
     logger = logging.getLogger() 
@@ -31,8 +32,14 @@ def main():
     # suite.addTest(loader.loadTestsFromTestCase(TestApp)) 
  
     # runner.run(suite) 
+    
+    # Test_PcanBus().test_txrx()
+    # configs = can.detect_available_configs('bmcan')
+    can.set_driver_dll_dir('docs/CanDriverLib')
+    configs = can.detect_available_configs('zlgcan')
 
-    Test_PcanBus().test_txrx()
+    print(configs)
+
  
 if __name__ == '__main__': 
     main() 

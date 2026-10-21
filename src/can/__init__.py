@@ -124,6 +124,7 @@ from .message import Message
 from .notifier import Notifier
 from .thread_safe_bus import ThreadSafeBus
 from .util import set_logging_level
+from .dllpath import set_driver_dll_dir
 
 with contextlib.suppress(PackageNotFoundError):
     __version__ = version("python-can")

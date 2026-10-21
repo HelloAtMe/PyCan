@@ -677,7 +677,11 @@ class PCANBasic:
         else:
             lib_name = "pcanbasic"
 
-        lib_path = find_library(lib_name)
+        # lib_path = find_library(lib_name)
+        from ...dllpath import DRIVER_DLL_DIR 
+        if DRIVER_DLL_DIR:
+            lib_path = DRIVER_DLL_DIR.joinpath(lib_name)
+            
         if not lib_path:
             raise OSError(f"{lib_name} library not found.")
         try:

@@ -24,7 +24,10 @@ logger = logging.getLogger('can.interfaces.libtosun')
 
 
 class libtosunBus(can.BusABC):
-    def __init__(self, channel: Any = None, *, is_fd: bool, timing: Union[BitTiming, BitTimingFd], 
+    def __init__(self, 
+                 channel: Any = None, *, 
+                 is_fd: bool, 
+                 timing: Union[BitTiming, BitTimingFd], 
                  can_filters: Optional[CanFilters] = None, 
                  hwserial: bytes = b"", **kwargs: object):
         
@@ -54,10 +57,8 @@ class libtosunBus(can.BusABC):
         self.device = TSMasterDevice(configs=configs, hwserial=hwserial, is_include_tx=False)
         super().__init__(channel, can_filters, **kwargs)
 
-
     def send(self, msg: can.Message, timeout: Optional[float] = 0.1) -> None:
         self.device.send_msg(msg, timeout)
-
 
     def _recv_internal(self, timeout: float = 0.1) -> Tuple[Optional[can.Message], bool]:
         '''
@@ -68,7 +69,26 @@ class libtosunBus(can.BusABC):
 
         return msg, False
 
-
     def shutdown(self) -> None:
         self.device.shut_down()
         super().shutdown()
+
+    @staticmethod
+    def _detect_available_configs():
+        interfaces = []
+
+        ret, count = TSMasterDevice.tscan_scan_devices()
+        if ret != 0:
+            return interfaces
+
+        for i in range(count):
+            ret, device_info = TSMasterDevice.tscan_get_device_info(i)
+            channel_config = {
+                "interface": "tosun",
+                "channel": i,
+                "hwserial": device_info['Serial'].encode('utf8'),
+                'Manufacture': device_info['Manufacture'],
+                'Product': device_info['Product']
+            }
+            interfaces.append(channel_config)
+        return interfaces

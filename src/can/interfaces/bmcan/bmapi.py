@@ -17,6 +17,7 @@ import os
 import sys
 from can.util import len2dlc, dlc2len
 from .exceptions import BmError
+from ...dllpath import DRIVER_DLL_DIR
 
 # Define Module Logger
 # ====================
@@ -36,21 +37,23 @@ if "Linux" in platform.system():
 else:
     DLL_NAME = "BMAPI64.dll" if platform.architecture()[0] == "64bit" else "BMAPI.dll"
 
-lib_name = "bmapi64" if platform.architecture()[0] == "64bit" else "bmapi"
-dll_path = find_library(lib_name)
+if DRIVER_DLL_DIR:
+    dll_path = DRIVER_DLL_DIR.joinpath(DLL_NAME).as_posix()
+# lib_name = "bmapi64" if platform.architecture()[0] == "64bit" else "bmapi"
+# dll_path = find_library(lib_name)
 
-if not dll_path:
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    pkg_path = os.path.join(current_dir, DLL_NAME)
-    if os.path.exists(pkg_path):
-        dll_path = pkg_path
-    elif getattr(sys, "frozen", False) and getattr(sys, "_MEIPASS", None):
-        meipass_path = os.path.join(sys._MEIPASS, DLL_NAME)
-        if os.path.exists(meipass_path):
-            dll_path = meipass_path
+# if not dll_path:
+#     current_dir = os.path.dirname(os.path.abspath(__file__))
+#     pkg_path = os.path.join(current_dir, DLL_NAME)
+#     if os.path.exists(pkg_path):
+#         dll_path = pkg_path
+#     elif getattr(sys, "frozen", False) and getattr(sys, "_MEIPASS", None):
+#         meipass_path = os.path.join(sys._MEIPASS, DLL_NAME)
+#         if os.path.exists(meipass_path):
+#             dll_path = meipass_path
 
-if not dll_path:
-    dll_path = DLL_NAME
+# if not dll_path:
+#     dll_path = DLL_NAME
 
 try:
     bmapi_dll = ctypes.cdll.LoadLibrary(dll_path)

@@ -1048,3 +1048,22 @@ class BmCanBus(BusABC):
         # Test would wait for FC from ECU until 'testerTimeout.b' timeout occurs.
         self._isotp_config.testerTimeout.b = testerTimeout.get("b", 50)
         self._isotp_config.testerTimeout.c = testerTimeout.get("c", 0)
+
+    @staticmethod
+    def _detect_available_configs():
+        import re
+        interfaces = []
+        pattern = re.compile(r'Virtual Channel(.*)')
+        for channel in BmCanBus.enumerate():
+            if pattern.match(channel['name']):
+                continue
+            channel_config = {
+                "interface": "bmcan",
+                "channel": channel['index'],
+                "device_name": channel['name']
+            }
+            interfaces.append(channel_config)
+        return interfaces
+        
+
+    

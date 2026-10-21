@@ -12,12 +12,17 @@ from ctypes.util import find_library
 
 from . import xlclass
 from .exceptions import VectorInitializationError, VectorOperationError
+from ...dllpath import DRIVER_DLL_DIR
 
 LOG = logging.getLogger(__name__)
 
 # Load Windows DLL
 DLL_NAME = "vxlapi64" if platform.architecture()[0] == "64bit" else "vxlapi"
-if dll_path := find_library(DLL_NAME):
+if DRIVER_DLL_DIR:
+    dll_path = DRIVER_DLL_DIR.joinpath(DLL_NAME)
+
+# if dll_path := find_library(DLL_NAME):
+if dll_path:
     _xlapi_dll = ctypes.windll.LoadLibrary(dll_path)
 else:
     raise FileNotFoundError(f"Vector XL library not found: {DLL_NAME}")

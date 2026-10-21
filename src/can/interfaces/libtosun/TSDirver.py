@@ -12,9 +12,11 @@ import platform
 import sys
 import shutil
 
-# _curr_path = os.path.dirname(__file__)
-TS_DLL_PATH = 'res/libs/libtosun'
-_curr_path = os.path.join(os.path.abspath(os.path.curdir), TS_DLL_PATH)
+from ...dllpath import DRIVER_DLL_DIR
+
+if DRIVER_DLL_DIR:
+    _curr_path = DRIVER_DLL_DIR.joinpath('libTOSUN').as_posix()
+
 _arch, _os = platform.architecture()
 _os = platform.system()
 _is_windows, _is_linux = False, False
@@ -36,8 +38,7 @@ if 'windows' in _os.lower():
         #     shutil.copy(os.path.join(_curr_path, 'windows/x64/libTSH.dll'),'./')
             _lib_dep.append(os.path.join(_curr_path, 'x64/libTSH.dll'))
         _lib_path = os.path.join(_curr_path, 'x64/libTSCAN.dll')
-    # if not os.path.exists(_lib_path):
-    #     _lib_path = r"D:\demo\libtosun\libtosun\windows\X64\libTSCAN.dll"
+
     for _lib in _lib_dep:
         windll.LoadLibrary(_lib)
     dll = windll.LoadLibrary(_lib_path)

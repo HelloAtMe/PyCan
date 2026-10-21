@@ -986,10 +986,14 @@ class VectorBus(BusABC):
         configs: list[AutoDetectedVectorConfig] = []
         channel_configs = get_channel_configs()
         LOG.info("Found %d channels", len(channel_configs))
+
+        import re
+        pattern = re.compile(r'Virtual Channel(.*)')
         for channel_config in channel_configs:
             if (
-                not channel_config.channel_bus_capabilities
-                & xldefine.XL_BusCapabilities.XL_BUS_ACTIVE_CAP_CAN
+                (not channel_config.channel_bus_capabilities
+                & xldefine.XL_BusCapabilities.XL_BUS_ACTIVE_CAP_CAN) or 
+                (pattern.match(channel_config.name))
             ):
                 continue
             LOG.info(
@@ -997,6 +1001,7 @@ class VectorBus(BusABC):
                 channel_config.channel_index,
                 channel_config.name,
             )
+            
             configs.append(
                 {
                     "interface": "vector",

@@ -398,5 +398,19 @@ class TSMasterDevice():
     def tscan_get_error_description(self, ACode):
         return self.error_code[ACode]
 
+    @staticmethod
+    def tscan_scan_devices() -> tuple[int, int]:
+        dev_count = c_uint32(0)
+        ret = tscan_scan_devices(byref(dev_count))
+        return ret, dev_count.value
+    
+    @staticmethod
+    def tscan_get_device_info(index):
+        manufacture = c_char_p(); product = c_char_p(); serial = c_char_p()
+        ret = tscan_get_device_info(c_uint32(index), manufacture, product, serial)
+        return ret, {'Manufacture': manufacture.value.decode('utf8'), 
+                       'Product': product.value.decode('utf8'),
+                       'Serial': serial.value.decode('utf8'),}
+
     def shut_down(self):
         tsapp_disconnect_by_handle(self.HwHandle)

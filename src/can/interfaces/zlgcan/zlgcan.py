@@ -3,7 +3,6 @@ import platform
 import threading
 import time
 
-ZLG_DLLFILE = 'res/libs/zlgcan_x64/zlgcan.dll'
 
 
 ZCAN_DEVICE_TYPE = c_uint
@@ -425,7 +424,14 @@ def ZCAN_DYNAMIC_CONFIG_CAN_BUSRATIO_ENABLE(can_id):
 class ZCAN(object):
     def __init__(self):
         if platform.system() == "Windows":
-            self.__dll = windll.LoadLibrary(ZLG_DLLFILE)
+            from ...dllpath import DRIVER_DLL_DIR
+
+            if DRIVER_DLL_DIR:
+                dll_path = DRIVER_DLL_DIR.joinpath('zlgcan.dll')
+            try:
+                self.__dll = windll.LoadLibrary(dll_path)
+            except :
+                self.__dll = None
         else:
             print("No support now!")
         if self.__dll == None:
